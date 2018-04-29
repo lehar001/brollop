@@ -46,13 +46,15 @@ class HomeScreen extends React.Component{
         var todos = [];
         querySnapshot.forEach(function(doc) {
           const todo = doc.data();
-          weddingDay.setDate(weddingDay.getDate() - todo.daysBeforeWedding);
-          var todoDate = weddingDay.toLocaleString();
-          todos.push({
-            key: doc.id,
-            todoDate,
-            todo
-          });
+          if (todo.completed[uid] !== true) {
+            weddingDay.setDate(weddingDay.getDate() - todo.daysBeforeWedding);
+            var todoDate = weddingDay.toLocaleString();
+            todos.push({
+              key: doc.id,
+              todoDate,
+              todo
+            });  
+          }
         });
         this.setState({
           todos: todos,
