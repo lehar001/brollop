@@ -12,41 +12,14 @@ class TodoDetail extends React.Component {
   }
 
   componentDidMount(){
-    // Function to check if array contains value from https://stackoverflow.com/questions/1181575/determine-whether-an-array-contains-a-value
-    var contains = function(needle) {
-      // Per spec, the way to identify NaN is that it is not equal to itself
-      var findNaN = needle !== needle;
-      var indexOf;
-
-      if(!findNaN && typeof Array.prototype.indexOf === 'function') {
-          indexOf = Array.prototype.indexOf;
-      } else {
-          indexOf = function(needle) {
-              var i = -1, index = -1;
-
-              for(i = 0; i < this.length; i++) {
-                  var item = this[i];
-
-                  if((findNaN && item !== item) || item === needle) {
-                      index = i;
-                      break;
-                  }
-              }
-
-              return index;
-          };
-      }
-
-      return indexOf.call(this, needle) > -1;
-    };
-
     // Check if todo is completed
     const uid = firebase.auth().currentUser.uid;
-    var isCompleted = contains.call(this.props.navigation.state.params.todo.todo.completed, uid);
-    console.log(isCompleted);
-    this.setState({
-      isCompleted,
-    });
+    const completed = this.props.navigation.state.params.todo.todo.completed;
+    if (completed[uid] === true) {
+      this.setState({
+        isCompleted: true,
+      });
+    }
   }
 
   render() {
@@ -61,11 +34,11 @@ class TodoDetail extends React.Component {
         return transaction.get(doc).then(snapshot => {
           var completed = snapshot.data().completed;
           if (completed !== undefined) {
-            completed.push(uid);
+            completed[uid] = true;
             transaction.update(doc, 'completed', completed);
           } else {
-            completed =[];
-            completed.push(uid);
+            completed = {};
+            completed[uid] = true;
             transaction.update(doc, 'completed', completed);
           }
           this.setState({
@@ -83,10 +56,7 @@ class TodoDetail extends React.Component {
       return db.runTransaction(transaction => {
         return transaction.get(doc).then(snapshot => {
           var completed = snapshot.data().completed;
-          var index = completed.indexOf(uid);
-          if (index > -1) {
-            completed.splice(index, 1);
-          }
+          completed[uid] = false;
           transaction.update(doc, 'completed', completed);
           this.setState({
             isCompleted: false,
