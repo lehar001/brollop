@@ -1,5 +1,5 @@
 {
-  "name": "RNFirebaseStarter",
+  "name": "Brollop",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -15,15 +15,27 @@
     "ios": "react-native run-ios",
     "rename": "node ./bin/rename.js",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json"
   },
   "jest": {
     "preset": "react-native"
   },
   "dependencies": {
     "fbjs": "^0.8.16",
-    "react": "^16.3.1",
-    "react-native": "^0.55.3",
-    "react-native-firebase": "^4.0.6"
+    "react": "^16.2.0",
+    "react-native": "^0.53.0",
+    "react-native-datepicker": "^1.6.0",
+    "react-native-extended-stylesheet": "^0.8.1",
+    "react-native-firebase": "^4.0.6",
+    "react-native-modal-dropdown": "^0.6.2",
+    "react-native-polyfill": "^1.2.1",
+    "react-native-segmented-control-tab": "^3.2.2",
+    "react-native-star-rating": "^1.0.9",
+    "react-native-swipeout": "^2.3.3",
+    "react-native-swiper": "^1.5.13",
+    "react-native-ui-stepper": "^1.2.4",
+    "react-native-vector-icons": "^4.5.0",
+    "react-navigation": "^1.3.2"
   }
 }

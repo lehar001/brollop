@@ -1,61 +1,61 @@
 import React from 'react';
-import { StyleSheet, Platform, Image, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Platform, Image, Text, View, Button } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 import firebase from 'react-native-firebase';
+
+import { LoginStack, MainTabs, IntroStack } from './config/router';
+
+EStyleSheet.build({ // always call EStyleSheet.build() even if you don't use global variables!
+  $primaryColor: 'teal'
+});
 
 export default class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      // firebase things?
+      loading: true,
     };
   }
 
+  // Check to see if user is logged in or not.
+  // Also listen for changes if user logs in.
   componentDidMount() {
-    // firebase things?
+    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        const uid = user._user.uid;
+        const db = firebase.firestore();
+
+        db.collection('weddings').doc(uid).onSnapshot((wedding) => {
+          this.setState({
+            loading: false,
+            wedding: wedding.data(),
+            loggedIn: true
+          });
+        });
+      } else {
+        this.setState({
+          loading: false,
+          loggedIn: false
+        });
+      }
+    });
+  }
+  // Stop listening for changes when component is about to unmount
+  componentWillUnmount() {
+    console.log('Component unmounting');
+    this.authSubscription();
   }
 
   render() {
-    return (
-      <ScrollView>
-        <View style={styles.container}>
-        <Image source={require('./assets/RNFirebase.png')} style={[styles.logo]} />
-        <Text style={styles.welcome}>
-          Welcome to the React Native{'\n'}Firebase starter project!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        {Platform.OS === 'ios' ? (
-          <Text style={styles.instructions}>
-            Press Cmd+R to reload,{'\n'}
-            Cmd+D or shake for dev menu
-          </Text>
-        ) : (
-          <Text style={styles.instructions}>
-            Double tap R on your keyboard to reload,{'\n'}
-            Cmd+M or shake for dev menu
-          </Text>
-        )}
-        <View style={styles.modules}>
-          <Text style={styles.modulesHeader}>The following Firebase modules are enabled:</Text>
-          {firebase.admob.nativeModuleExists && <Text style={styles.module}>Admob</Text>}
-          {firebase.analytics.nativeModuleExists && <Text style={styles.module}>Analytics</Text>}
-          {firebase.auth.nativeModuleExists && <Text style={styles.module}>Authentication</Text>}
-          {firebase.crashlytics.nativeModuleExists && <Text style={styles.module}>Crashlytics</Text>}
-          {firebase.firestore.nativeModuleExists && <Text style={styles.module}>Cloud Firestore</Text>}
-          {firebase.messaging.nativeModuleExists && <Text style={styles.module}>Cloud Messaging</Text>}
-          {firebase.links.nativeModuleExists && <Text style={styles.module}>Dynamic Links</Text>}
-          {firebase.iid.nativeModuleExists && <Text style={styles.module}>Instance ID</Text>}
-          {firebase.notifications.nativeModuleExists && <Text style={styles.module}>Notifications</Text>}
-          {firebase.perf.nativeModuleExists && <Text style={styles.module}>Performance Monitoring</Text>}
-          {firebase.database.nativeModuleExists && <Text style={styles.module}>Realtime Database</Text>}
-          {firebase.config.nativeModuleExists && <Text style={styles.module}>Remote Config</Text>}
-          {firebase.storage.nativeModuleExists && <Text style={styles.module}>Storage</Text>}
-        </View>
-        </View>    
-      </ScrollView>
-    );
+    // The application is initialising
+    if (this.state.loading) return null;
+    // User is logged in and has wedding data - got to main screen
+    if (this.state.loggedIn && this.state.wedding) return (<MainTabs />);
+    // The user is logged in but doesn't have a wedding, go to intro screen
+    if (this.state.loggedIn) return ( <IntroStack /> );
+    // The user is null, so they're logged out
+    return <LoginStack />;
   }
 }
 
@@ -65,33 +65,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  logo: {
-    height: 80,
-    marginBottom: 16,
-    marginTop: 32,
-    width: 80,
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  modules: {
-    margin: 20,
-  },
-  modulesHeader: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  module: {
-    fontSize: 14,
-    marginTop: 4,
-    textAlign: 'center',
   }
 });
