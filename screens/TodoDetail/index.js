@@ -56,7 +56,7 @@ class TodoDetail extends React.Component {
       return db.runTransaction(transaction => {
         return transaction.get(doc).then(snapshot => {
           var completed = snapshot.data().completed;
-          completed[uid] = false;
+          delete completed[uid];
           transaction.update(doc, 'completed', completed);
           this.setState({
             isCompleted: false,
