@@ -46,8 +46,7 @@ class BudgetScreen extends React.Component {
 
   componentWillUnmount() {
     const db = firebase.firestore();
-    const uid = firebase.auth().currentUser.uid;
-    var unsubscribe = db.collection("weddings").doc(uid).collection("budget").onSnapshot(() => {});
+    var unsubscribe = db.collection("weddings").onSnapshot(() => {});
     unsubscribe();
   }
 

@@ -131,8 +131,7 @@ class GuestList extends React.Component {
 
   componentWillUnmount() {
     const db = firebase.firestore();
-    const uid = firebase.auth().currentUser.uid;
-    var unsubscribe = db.collection("weddings").doc(uid).collection("guests").onSnapshot(() => {});
+    var unsubscribe = db.collection("weddings").onSnapshot(() => {});
     unsubscribe();
   }
 
@@ -288,7 +287,7 @@ export default GuestList;
 
 const styles = EStyleSheet.create({
   flatList: {
-  
+
   },
   itemContainer: {
     backgroundColor: "#FFFFFF",
