@@ -14,8 +14,8 @@ class TodoDetail extends React.Component {
   componentDidMount(){
     // Check if todo is completed
     const uid = firebase.auth().currentUser.uid;
-    const completed = this.props.navigation.state.params.todo.todo.completed;
-    if (completed[uid] === true) {
+    const completed = this.props.navigation.state.params.todo.completed;
+    if (completed === true) {
       this.setState({
         isCompleted: true,
       });
@@ -27,41 +27,31 @@ class TodoDetail extends React.Component {
 
     onSetDone = () => {
       const db = firebase.firestore();
-      const doc = db.collection("todos").doc(todo.key);
       const uid = firebase.auth().currentUser.uid;
+      const key = todo.key;
 
-      return db.runTransaction(transaction => {
-        return transaction.get(doc).then(snapshot => {
-          var completed = snapshot.data().completed;
-          if (completed !== undefined) {
-            completed[uid] = true;
-            transaction.update(doc, 'completed', completed);
-          } else {
-            completed = {};
-            completed[uid] = true;
-            transaction.update(doc, 'completed', completed);
-          }
-          this.setState({
-            isCompleted: true,
-          })
-        });
+      var tasksUpdate = {};
+      tasksUpdate[`completed.${key}`] = true;
+
+      db.collection("weddings").doc(uid).collection("tasks").doc("completed").update(tasksUpdate);
+
+      this.setState({
+        isCompleted: true,
       });
     }
 
     onSetNotDone = () => {
       const db = firebase.firestore();
-      const doc = db.collection("todos").doc(todo.key);
       const uid = firebase.auth().currentUser.uid;
+      const key = todo.key;
 
-      return db.runTransaction(transaction => {
-        return transaction.get(doc).then(snapshot => {
-          var completed = snapshot.data().completed;
-          delete completed[uid];
-          transaction.update(doc, 'completed', completed);
-          this.setState({
-            isCompleted: false,
-          })
-        });
+      var tasksUpdate = {};
+      tasksUpdate[`completed.${key}`] = firebase.firestore.FieldValue.delete();
+
+      db.collection("weddings").doc(uid).collection("tasks").doc("completed").update(tasksUpdate);
+
+      this.setState({
+        isCompleted: true,
       });
     }
 

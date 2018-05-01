@@ -38,26 +38,31 @@ class HomeScreen extends React.Component{
         this.setState({
           loading: false,
           wedding: wedding.data(),
-          daysLeft: daysLeft
+          daysLeft: daysLeft,
         });
       }
-      // Now get todo items and use wedding date to calculate todo dates
-      db.collection('todos').onSnapshot((querySnapshot) => {
-        var todos = [];
-        querySnapshot.forEach(function(doc) {
-          const todo = doc.data();
-          if (todo.completed[uid] !== true) {
-            weddingDay.setDate(weddingDay.getDate() - todo.daysBeforeWedding);
-            var todoDate = weddingDay.toLocaleString();
-            todos.push({
-              key: doc.id,
-              todoDate,
-              todo
-            });  
-          }
-        });
-        this.setState({
-          todos: todos,
+      // Get completed todos from wedding object
+      db.collection('weddings').doc(uid).collection('tasks').doc('completed').onSnapshot((querySnapshot) => {
+        var completedTasks = querySnapshot.data().completed;
+        // Now get todo items and use wedding date to calculate todo dates
+        db.collection('todos').onSnapshot((querySnapshot) => {
+          var todos = [];
+          querySnapshot.forEach(function(doc) {
+            const todo = doc.data();
+            if (completedTasks[doc.id] !== true) {
+              weddingDay.setDate(weddingDay.getDate() - todo.daysBeforeWedding);
+              var todoDate = weddingDay.toLocaleString();
+              todos.push({
+                key: doc.id,
+                todoDate,
+                todo,
+                completed: false,
+              });
+            }
+          });
+          this.setState({
+            todos: todos,
+          });
         });
       });
     });
