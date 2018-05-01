@@ -49,9 +49,11 @@ class HomeScreen extends React.Component{
           var todos = [];
           querySnapshot.forEach(function(doc) {
             const todo = doc.data();
+            console.log(todo.daysBeforeWedding);
             if (completedTasks[doc.id] !== true) {
-              weddingDay.setDate(weddingDay.getDate() - todo.daysBeforeWedding);
-              var todoDate = weddingDay.toLocaleString();
+              var d = new Date(weddingDay);
+              d.setDate(weddingDay.getDate() - todo.daysBeforeWedding);
+              var todoDate = d.toLocaleString();
               todos.push({
                 key: doc.id,
                 todoDate,

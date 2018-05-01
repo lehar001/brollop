@@ -51,7 +51,7 @@ class TodoDetail extends React.Component {
       db.collection("weddings").doc(uid).collection("tasks").doc("completed").update(tasksUpdate);
 
       this.setState({
-        isCompleted: true,
+        isCompleted: false,
       });
     }
 
