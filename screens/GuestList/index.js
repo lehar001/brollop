@@ -26,6 +26,18 @@ class GuestList extends React.Component {
     }
   }
 
+  filterGuests = (status, guests) => {
+     var filteredGuests = guests.filter(function(guest){
+        return guest.status == status;
+     }).map(function(guest){
+         return guest;
+     });
+     this.setState({
+       filteredGuests: filteredGuests,
+       allGuests: guests,
+     });
+   }
+
   componentDidMount() {
     const uid = firebase.auth().currentUser.uid;
     const db = firebase.firestore();
@@ -72,28 +84,13 @@ class GuestList extends React.Component {
             attendingGuests,
           });
         } else {
-          filterGuests = (status) => {
-             var filteredGuests = guests.filter(function(guest){
-                return guest.status == status;
-             }).map(function(guest){
-                 return guest;
-             });
-             this.setState({
-               filteredGuests: filteredGuests,
-               allGuests: guests,
-               totalGuests,
-               notAttendingGuests,
-               notAnsweredGuests,
-               attendingGuests,
-             });
-           }
 
           if (this.state.selectedIndex == 1) {
-            filterGuests("attending");
+            this.filterGuests("attending", guests);
           } else if (this.state.selectedIndex == 2) {
-            filterGuests("notAttending");
+            this.filterGuests("notAttending", guests);
           } else if (this.state.selectedIndex == 3) {
-            filterGuests("noAnswer");
+            this.filterGuests("noAnswer", guests);
           }
         }
 
@@ -137,8 +134,13 @@ class GuestList extends React.Component {
   }
 
   beginSearch = (text) => {
+    if (this.state.selectedIndex == 0) {
+      var allGuests = this.state.allGuests;
+    } else {
+      var allGuests = this.state.filteredGuests;
+    }
     var string = text.toUpperCase();
-    var allGuests = this.state.allGuests;
+    //var allGuests = this.state.allGuests;
     var filteredGuests = allGuests.filter(function(guest){
       var name = guest["name"].toUpperCase();
       return name.includes(string);
@@ -148,12 +150,25 @@ class GuestList extends React.Component {
     this.setState({
       filteredGuests
     });
+    if (string.length == 0) {
+      if (this.state.selectedIndex == 1) {
+        this.filterGuests("attending", this.state.allGuests);
+      } else if (this.state.selectedIndex == 2) {
+        this.filterGuests("notAttending", this.state.allGuests);
+      } else if (this.state.selectedIndex == 3) {
+        this.filterGuests("noAnswer", this.state.allGuests);
+      } else {
+       this.setState({
+         filteredGuests: this.state.allGuests,
+       });
+     }
+    }
   }
 
   clearSearch = () => {
     var allGuests = this.state.allGuests;
     this.setState({
-      filterGuests: allGuests,
+      filteredGuests: allGuests,
     });
   }
 
@@ -162,25 +177,14 @@ class GuestList extends React.Component {
       selectedIndex: index,
     });
 
-    filterGuests = (status) => {
-       var allGuests = this.state.allGuests;
-       var filteredGuests = allGuests.filter(function(guest){
-          return guest.status == status;
-       }).map(function(guest){
-           return guest;
-       });
-       this.setState({
-         filteredGuests
-       });
-     }
 
-    if (index == 1) {
-      filterGuests("attending");
-    } else if (index == 2) {
-      filterGuests("notAttending");
-    } else if (index == 3) {
-      filterGuests("noAnswer");
-    } else {
+     if (index == 1) {
+       this.filterGuests("attending", this.state.allGuests);
+     } else if (index == 2) {
+       this.filterGuests("notAttending", this.state.allGuests);
+     } else if (index == 3) {
+       this.filterGuests("noAnswer", this.state.allGuests);
+     } else {
       this.setState({
         filteredGuests: this.state.allGuests,
       });
