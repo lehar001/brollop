@@ -4,6 +4,7 @@ import Swipeout from 'react-native-swipeout';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import Icon from 'react-native-vector-icons/Ionicons';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { SearchBar } from 'react-native-elements'
 
 import { View, Text, FlatList, Button, TouchableHighlight, ActivityIndicator } from 'react-native';
 
@@ -133,6 +134,27 @@ class GuestList extends React.Component {
     const db = firebase.firestore();
     var unsubscribe = db.collection("weddings").onSnapshot(() => {});
     unsubscribe();
+  }
+
+  beginSearch = (text) => {
+    var string = text.toUpperCase();
+    var allGuests = this.state.allGuests;
+    var filteredGuests = allGuests.filter(function(guest){
+      var name = guest["name"].toUpperCase();
+      return name.includes(string);
+    }).map(function(guest){
+        return guest;
+    });
+    this.setState({
+      filteredGuests
+    });
+  }
+
+  clearSearch = () => {
+    var allGuests = this.state.allGuests;
+    this.setState({
+      filterGuests: allGuests,
+    });
   }
 
   handleIndexChange = (index) => {
@@ -271,6 +293,11 @@ class GuestList extends React.Component {
         <Text>Tackat ja: {this.state.attendingGuests}</Text>
         <Text>Tackat nej: {this.state.notAttendingGuests}</Text>
         <Text>Ej svarat: {this.state.notAnsweredGuests}</Text>
+        <SearchBar
+          onChangeText={(text) => this.beginSearch(text)}
+          onClear={() => this.clearSearch()}
+          placeholder='Sök gäst...'
+        />
         <FlatList
           style={styles.flatList}
           data={this.state.filteredGuests}

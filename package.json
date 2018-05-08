@@ -26,6 +26,7 @@
     "react": "^16.2.0",
     "react-native": "^0.53.0",
     "react-native-datepicker": "^1.6.0",
+    "react-native-elements": "^0.19.1",
     "react-native-extended-stylesheet": "^0.8.1",
     "react-native-firebase": "^4.0.6",
     "react-native-modal-dropdown": "^0.6.2",
