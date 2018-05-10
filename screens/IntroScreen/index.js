@@ -39,6 +39,9 @@ class IntroScreen extends React.Component {
         name1Genitive: name1Genitive,
         name2Genitive: name2Genitive
       });
+      db.doc(uid).collection("tasks").doc("completed").set({
+        completed: {}
+      });
     }
 
     return(
