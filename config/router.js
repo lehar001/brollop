@@ -17,6 +17,7 @@ import BudgetScreen from '../screens/BudgetScreen';
 import NewBudgetItem from '../screens/NewBudgetItem';
 import SettingsScreen from '../screens/SettingsScreen';
 import TodoDetail from '../screens/TodoDetail';
+import TodoScreen from '../screens/TodoScreen';
 
 // Initial login stack navigator
 export const LoginStack = StackNavigator({
@@ -38,6 +39,15 @@ export const GuestStack = StackNavigator({
   NewGuest: {
     screen: NewGuest,
   }
+});
+
+export const TodoStack = StackNavigator({
+  TodoScreen: {
+    screen: TodoScreen,
+    navigationOptions: {
+      title: "Att göra"
+    },
+  },
 });
 
 export const HomeStack = StackNavigator({
@@ -87,6 +97,12 @@ export const BudgetStack = StackNavigator({
 
 // This is the main navigation stack
 export const MainTabs = TabNavigator({
+  Todos: {
+    screen: TodoStack,
+    navigationOptions: ({ navigation }) => ({
+      tabBarLabel: "Att göra",
+    }),
+  },
   GuestList: {
     screen: GuestStack,
     navigationOptions: ({ navigation }) => ({
@@ -124,6 +140,8 @@ export const MainTabs = TabNavigator({
           iconName = `ios-cloud${focused ? '' : '-outline'}`;
         } else if (routeName === 'Budget') {
           iconName = `ios-cash${focused ? '' : '-outline'}`;
+        } else if (routeName === 'Todos') {
+          iconName = `ios-list${focused ? '' : '-outline'}`;
         }
 
         // You can return any component that you like here! We usually use an
