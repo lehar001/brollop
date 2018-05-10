@@ -49,6 +49,7 @@ class SettingsScreen extends React.Component {
 
     const db = firebase.firestore();
     const uid = firebase.auth().currentUser.uid;
+    const {goBack} = this.props.navigation;
 
     // Set convert name to genitive
     var name1Genitive = genitiveName(this.state.name1);
@@ -61,6 +62,8 @@ class SettingsScreen extends React.Component {
       name1Genitive: name1Genitive,
       name2Genitive: name2Genitive
     });
+    goBack();
+
   }
 
   render() {
