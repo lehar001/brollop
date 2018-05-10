@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableHighlight, Button } from 'react-native';
 import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { SearchBar } from 'react-native-elements'
 
 class BudgetScreen extends React.Component {
 
@@ -40,6 +41,7 @@ class BudgetScreen extends React.Component {
       this.setState({
         budgetItems: budgetItems,
         totalAmount: totalAmount,
+        filteredBudgetItems: budgetItems
       });
     });
   }
@@ -48,6 +50,33 @@ class BudgetScreen extends React.Component {
     const db = firebase.firestore();
     var unsubscribe = db.collection("weddings").onSnapshot(() => {});
     unsubscribe();
+  }
+
+  beginSearch = (text) => {
+    var allBudgetItems = this.state.budgetItems;
+    var string = text.toUpperCase();
+    //var allGuests = this.state.allGuests;
+    var filteredBudgetItems = allBudgetItems.filter(function(item){
+      var name = item["name"].toUpperCase();
+      return name.includes(string);
+    }).map(function(item){
+        return item;
+    });
+    this.setState({
+      filteredBudgetItems
+    });
+    if (string.length == 0) {
+       this.setState({
+         filteredBudgetItems: this.state.budgetItems,
+       });
+    }
+  }
+
+  clearSearch = () => {
+    var allBudgetItems = this.state.budgetItems;
+    this.setState({
+      filteredBudgetItems: allBudgetItems,
+    });
   }
 
   renderItem(item) {
@@ -62,19 +91,32 @@ class BudgetScreen extends React.Component {
   }
 
   _renderEmptyList() {
+    if (this.state.budgetItems == 0) {
     return (
-      <View>
-        <Text>Du verkar inte ha lagt till något än...</Text>
-        <Button title="Lägg till kostnad" onPress={() => this.props.navigation.navigate('NewBudgetItem')} />
-      </View>
-    )
+        <View>
+          <Text>Du verkar inte ha lagt till något än...</Text>
+          <Button title="Lägg till kostnad" onPress={() => this.props.navigation.navigate('NewBudgetItem')} />
+        </View>
+      )
+      } else {
+        return (
+        <View>
+          <Text>Inga resultat...</Text>
+        </View>
+      )
+      }
   }
 
   render() {
     return(
       <View>
+        <SearchBar
+          onChangeText={(text) => this.beginSearch(text)}
+          onClear={() => this.clearSearch()}
+          placeholder='Sök gäst...'
+        />
         <FlatList
-          data={this.state.budgetItems}
+          data={this.state.filteredBudgetItems}
           renderItem={this.renderItem.bind(this)}
           keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this._renderEmptyList.bind(this)}
