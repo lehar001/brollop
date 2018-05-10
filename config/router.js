@@ -48,6 +48,9 @@ export const TodoStack = StackNavigator({
       title: "Att göra"
     },
   },
+  TodoDetail: {
+    screen: TodoDetail
+  }
 });
 
 export const HomeStack = StackNavigator({
@@ -141,7 +144,7 @@ export const MainTabs = TabNavigator({
         } else if (routeName === 'Budget') {
           iconName = `ios-cash${focused ? '' : '-outline'}`;
         } else if (routeName === 'Todos') {
-          iconName = `ios-list${focused ? '' : '-outline'}`;
+          iconName = `ios-list-box${focused ? '' : '-outline'}`;
         }
 
         // You can return any component that you like here! We usually use an
