@@ -63,7 +63,7 @@ class BudgetScreen extends React.Component {
         return item;
     });
     this.setState({
-      filteredBudgetItems
+      filteredBudgetItems,
     });
     if (string.length == 0) {
        this.setState({
@@ -113,7 +113,7 @@ class BudgetScreen extends React.Component {
         <SearchBar
           onChangeText={(text) => this.beginSearch(text)}
           onClear={() => this.clearSearch()}
-          placeholder='Sök gäst...'
+          placeholder='Sök i budget...'
         />
         <FlatList
           data={this.state.filteredBudgetItems}

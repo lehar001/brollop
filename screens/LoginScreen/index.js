@@ -6,6 +6,11 @@ import LoginForm from './LoginForm';
 
 class LoginScreen extends React.Component {
 
+  onLoginGoogle = () => {
+    var provider = new firebase.auth.GoogleAuthProvider();
+
+  }
+
   render() {
     const { navigate } = this.props.navigation;
 
