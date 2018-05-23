@@ -14,6 +14,7 @@ admin.initializeApp();
 exports.calculateRating = functions.firestore
   .document('stores/{category}/items/{storeId}/reviews/{reviewId}')
   .onWrite((change, context) => {
+    console.log("Rating calculation started...")
     // Get an object with the current document value.
     // If the document does not exist, it has been deleted.
     const document = change.after.exists ? change.after.data() : null;
@@ -30,17 +31,26 @@ exports.calculateRating = functions.firestore
          var currentRating = doc.data().rating;
          var currentReviews = doc.data().reviews;
          console.log('Current rating is ' + currentRating);
+         console.log('Current reviews is ' + currentRating);
+
          // How to handle updates?
-         if (document !== null && updatedReview === false) {
-           var newReviews = currentReviews + 1;
-           var newRating = ((currentReviews * currentRating) + document.rating) / newReviews;
+         if (document !== null && currentReviews === undefined) {
+           // This is a brand new review
+           var newReviews = 1;
+           var newRating = document.rating;
+         } else if (document !== null && updatedReview === false) {
+           // This is an added review
+            newReviews = currentReviews + 1;
+            newRating = ((currentReviews * currentRating) + document.rating) / newReviews;
          } else if (document === null) {
+           // This is a removed review
            newReviews = currentReviews - 1;
            newRating = ((currentReviews * currentRating) - oldDocument.rating) / newReviews;
            if (newReviews === 0) {
              newRating = 0;
            }
          } else if (document !== null && updatedReview === true) {
+           // This is an updated review
            newReviews = currentReviews;
            newRating = ((currentReviews * currentRating) - oldDocument.rating + document.rating) / newReviews;
          }
