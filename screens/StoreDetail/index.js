@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, Button, Modal, TouchableHighlight, Image } from 'react-native';
+import { View, Text, FlatList, Button, Modal, TouchableHighlight, Image, ActivityIndicator } from 'react-native';
 import firebase from 'react-native-firebase';
 import ReviewModal from './ReviewModal';
 import StarRating from 'react-native-star-rating';
@@ -15,6 +15,7 @@ class StoreDetail extends React.Component {
     this.state = {
       reviews: '',
       modalVisible: false,
+      imageLoading: true,
     }
   }
 
@@ -78,6 +79,10 @@ class StoreDetail extends React.Component {
     this.setState({modalVisible: visible});
   }
 
+  imageLoaded = () => {
+    this.setState({ imageLoading: false })
+  }
+
   render() {
     var store = this.props.navigation.state.params.store;
     return(
@@ -89,11 +94,15 @@ class StoreDetail extends React.Component {
         />
         <View>
           {this.state.img ? (
-            <Image
-              style={{height: 200}}
-              source={{uri: this.state.img}}
-              resizeMode="cover"
-            />
+            <View style={{height: 200}}>
+              {this.state.imageLoading ? (<ActivityIndicator size="small" color="#000000" animating={this.state.imageLoading} />) : ( null )}
+              <Image
+                style={{height: 200}}
+                source={{uri: this.state.img}}
+                resizeMode="cover"
+                onLoadEnd={this.imageLoaded}
+              />
+            </View>
           ) : (
             <Text>No image</Text>
           )}
