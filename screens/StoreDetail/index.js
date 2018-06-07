@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, Button, Modal, TouchableHighlight } from 'react-native';
+import { View, Text, FlatList, Button, Modal, TouchableHighlight, Image } from 'react-native';
 import firebase from 'react-native-firebase';
 import ReviewModal from './ReviewModal';
 import StarRating from 'react-native-star-rating';
@@ -21,6 +21,7 @@ class StoreDetail extends React.Component {
   componentDidMount() {
      const storeKey = this.props.navigation.state.params.store.key;
      const category = this.props.navigation.state.params.store.category;
+     console.log(this.props.navigation.state.params.store);
      const db = firebase.firestore().collection("stores").doc(category).collection("items").doc(storeKey).collection("reviews");
      db.onSnapshot((querySnapshot) => {
        var reviews = [];
@@ -36,6 +37,11 @@ class StoreDetail extends React.Component {
        this.setState({
          reviews: reviews,
        });
+     });
+
+     const img = this.props.navigation.state.params.store.store.img.url;
+     this.setState({
+       img: img,
      });
   }
 
@@ -82,6 +88,15 @@ class StoreDetail extends React.Component {
           visible={this.state.modalVisible}
         />
         <View>
+          {this.state.img ? (
+            <Image
+              style={{height: 200}}
+              source={{uri: this.state.img}}
+              resizeMode="cover"
+            />
+          ) : (
+            <Text>No image</Text>
+          )}
           <StarRating
             disabled={true}
             emptyStar={'ios-star-outline'}

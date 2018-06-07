@@ -3902,10 +3902,6 @@ react-native-firebase@^4.0.6:
     postinstall-build "^5.0.1"
     prop-types "^15.6.1"
 
-react-native-google-signin@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/react-native-google-signin/-/react-native-google-signin-0.12.0.tgz#fc549593adbc92ed2a5a683a957f157650ece961"
-
 react-native-modal-dropdown@^0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/react-native-modal-dropdown/-/react-native-modal-dropdown-0.6.2.tgz#da6027b3546d2031fbce46242bffc95561e13599"
