@@ -44,6 +44,12 @@ class BudgetScreen extends React.Component {
         filteredBudgetItems: budgetItems
       });
     });
+    db.collection("weddings").doc(uid).onSnapshot((querySnapshot) => {
+      var budget = querySnapshot.data().budget;
+      this.setState({
+        budget: budget,
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -84,7 +90,7 @@ class BudgetScreen extends React.Component {
       <TouchableHighlight onPress={() => this.props.navigation.navigate('NewBudgetItem', {item: item})}>
         <View>
           <Text>{item.item.name} x {item.item.quantity}</Text>
-          <Text>{item.item.amount}</Text>
+          <Text>{item.item.amount} kr</Text>
         </View>
       </TouchableHighlight>
     )
@@ -121,7 +127,8 @@ class BudgetScreen extends React.Component {
           keyExtractor={(item, index) => index.toString()}
           ListEmptyComponent={this._renderEmptyList.bind(this)}
         />
-        <Text>Total {this.state.totalAmount}</Text>
+        <Text>Total just nu: {this.state.totalAmount} kr</Text>
+        <Text>Er budget: {this.state.budget} kr</Text>
       </View>
     )
   }

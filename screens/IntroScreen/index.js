@@ -11,7 +11,8 @@ class IntroScreen extends React.Component {
     this.state = {
       name1: '',
       name2: '',
-      date: new Date()
+      date: new Date(),
+      budget: 0,
     };
   }
   render() {
@@ -37,7 +38,8 @@ class IntroScreen extends React.Component {
         name1: this.state.name1,
         name2: this.state.name2,
         name1Genitive: name1Genitive,
-        name2Genitive: name2Genitive
+        name2Genitive: name2Genitive,
+        budget: this.state.budget
       });
       db.doc(uid).collection("tasks").doc("completed").set({
         completed: {}
@@ -84,6 +86,12 @@ class IntroScreen extends React.Component {
             cancelBtnText="Avbryt"
             showIcon={false}
             onDateChange={(date) => {this.setState({date: new Date(date)})}}
+          />
+          <Text>Vad har ni för budget?</Text>
+          <TextInput
+            value={`${this.state.budget}`}
+            onChangeText={(text) => {this.setState({budget: parseInt(text)})}}
+            keyboardType="numeric"
           />
           <Button title="Spara" onPress={() => onSave()} />
         </View>

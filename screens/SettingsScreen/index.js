@@ -23,6 +23,7 @@ class SettingsScreen extends React.Component {
         name1: wedding.name1,
         name2: wedding.name2,
         date: wedding.date,
+        budget: wedding.budget,
       });
     });
   }
@@ -60,7 +61,8 @@ class SettingsScreen extends React.Component {
       name2: this.state.name2,
       date: this.state.date,
       name1Genitive: name1Genitive,
-      name2Genitive: name2Genitive
+      name2Genitive: name2Genitive,
+      budget: this.state.budget
     });
     goBack();
 
@@ -94,6 +96,20 @@ class SettingsScreen extends React.Component {
           cancelBtnText="Avbryt"
           showIcon={false}
           onDateChange={(date) => {this.setState({date: new Date(date)})}}
+        />
+        <Text>Vad har ni för budget?</Text>
+        <TextInput
+          value={`${this.state.budget}`}
+          onChangeText={(text) => {
+            if(text === ""){
+              this.setState({budget: 0})
+                return;
+            }
+            if(isNaN(text))  //this will allow only number
+                return;
+            this.setState({budget: parseInt(text)})}
+          }
+          keyboardType="numeric"
         />
         <Button title="Spara" onPress={() => this.onSave()} />
         <Button title="Logga ut" color={'tomato'} onPress={() => this.onLogout()} />
