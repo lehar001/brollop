@@ -49,7 +49,7 @@ class HomeScreen extends React.Component{
           var completedTasks = [];
         }
         // Now get todo items and use wedding date to calculate todo dates
-        db.collection('todos').orderBy("daysBeforeWedding", "desc").onSnapshot((querySnapshot) => {
+        db.collection('todos').orderBy("daysBeforeWedding", "desc").limit(5).onSnapshot((querySnapshot) => {
           var todos = [];
           querySnapshot.forEach(function(doc) {
             const todo = doc.data();
